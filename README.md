@@ -36,3 +36,6 @@ To generate a new key pair for API access:
 3. Ensure to securely save your public and private keys for API authentication.
 
 Note: Always keep your API keys confidential and avoid sharing them publicly.
+
+## License
+This project is licensed under the [MIT License](./LICENSE).
