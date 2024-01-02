@@ -6,13 +6,13 @@ This application allows users to retrieve account information from their D-Accou
 ### 1. Configuration Setup
 Before running the application, set up the configuration files for your accounts:
 ```bash
-python create_config.py
+python config/create_config.py
 ```
 
 ### 2. Encrypt Configuration
 Encrypt the configuration files for security:
 ```bash
-python create_key_encrypted_config.py
+python config/create_key_encrypted_config.py
 ```
 
 ### 3. Main Functionality
