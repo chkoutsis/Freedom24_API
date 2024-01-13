@@ -37,5 +37,16 @@ To generate a new key pair for API access:
 
 Note: Always keep your API keys confidential and avoid sharing them publicly.
 
+## Getting Started
+### Prerequisites
+Before running the code, make sure you have the following installed:
+
+- [Python](https://www.python.org/) (version 3.10.X)
+
+You can install the required Python packages using:
+```bash
+pip install -r requirements.txt
+```
+
 ## License
 This project is licensed under the [MIT License](./LICENSE).
