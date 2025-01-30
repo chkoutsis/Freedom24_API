@@ -9,13 +9,7 @@ Before running the application, set up the configuration files for your accounts
 python config/create_config.py
 ```
 
-### 2. Encrypt Configuration
-Encrypt the configuration files for security:
-```bash
-python config/create_key_encrypted_config.py
-```
-
-### 3. Main Functionality
+### 2. Main Functionality
 Run the application to retrieve account information and create a JSON file:
 ```bash
 python main.py
