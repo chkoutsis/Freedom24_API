@@ -1,6 +1,6 @@
 # Freedom24_API
 
-This application allows users to retrieve account information from their D-Account and Trading Account using their respective API keys, securely manage configurations and create a JSON structure by combining the information. 
+This application allows users to retrieve account information from their D-Account and Trading Account using their respective API keys, securely manage configurations and create a JSON structure by combining the information.
 
 ## Usage
 ### 1. Configuration Setup
@@ -12,10 +12,18 @@ python config/create_config.py
 ### 2. Main Functionality
 Run the application to retrieve account information and create a JSON file:
 ```bash
-python main.py
+python main.py --output <output_file>
 ```
 
-Note: Saves a JSON file named **data.json** in a dynamically created **data** directory within the **Freedom24** repository.
+#### Arguments:
+- `--output`: (Optional) The name of the output JSON file. Defaults to `data.json`.
+
+Example:
+```bash
+python main.py --output account_data.json
+```
+
+Note: The JSON file will be saved in a dynamically created **data** directory within the **Freedom24** repository.
 
 ## API Key Retrieval and Key Pair Generation
 ### Obtain API Key from Freedom24
