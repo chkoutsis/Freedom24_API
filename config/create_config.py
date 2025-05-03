@@ -1,91 +1,142 @@
 import getpass
+import logging
 import os
+from typing import Tuple
 
 from cryptography.fernet import Fernet
 
 
-def encrypt_data(data):
+class ConfigCreator:
+    """A class to create and encrypt configuration files for trading and D accounts."""
+
+    def __init__(self, main_config_path: str = "C:\\AppConfigs\\Freedom24"):
+        """
+        Initializes the ConfigCreator with the main config path for configuration files.
+
+        Args:
+        - main_config_path (str): The base main_config_path for storing encrypted configuration files.
+        """
+        self.main_config_path = main_config_path
+        if not os.path.exists(self.main_config_path):
+            os.makedirs(self.main_config_path)
+            logging.info(f"Created main config directory at {self.main_config_path}.")
+        else:
+            logging.info(
+                f"Using existing main config directory at {self.main_config_path}."
+            )
+
+    def encrypt_data(self, data: bytes) -> Tuple[bytes, bytes]:
+        """
+        Encrypts the provided data using Fernet encryption.
+
+        Args:
+        - data (bytes): Data to be encrypted.
+
+        Returns:
+        - tuple: Encrypted data and the encryption key.
+        """
+        try:
+            key = Fernet.generate_key()
+            cipher_suite = Fernet(key)
+            encrypted_data = cipher_suite.encrypt(data)
+            logging.info("Data encrypted successfully.")
+            return encrypted_data, key
+        except Exception as e:
+            logging.error(f"Failed to encrypt data: {e}", exc_info=True)
+            raise
+
+    def create_and_encrypt_config(
+        self, account_type: str, login: str, password: str
+    ) -> None:
+        """
+        Creates a configuration, encrypts it, and saves the encrypted file and key.
+        Skips if the encrypted file already exists.
+
+        Args:
+        - account_type (str): The type of account ('Trading' or 'D').
+        - login (str): Login for the accounts.
+        - password (str): Password for the accounts.
+        """
+        account_types = {"Trading": "trading_account", "D": "d_account"}
+        encrypted_config_file = os.path.join(
+            self.main_config_path, f"{account_types[account_type]}_encrypted_config.bin"
+        )
+        key_file = os.path.join(
+            self.main_config_path, f"{account_types[account_type]}_key.key"
+        )
+
+        if os.path.exists(encrypted_config_file) and os.path.exists(key_file):
+            logging.info(
+                f"{account_type} Account encrypted config already exists. Skipping."
+            )
+            return
+
+        try:
+            public_key = input(f"\nEnter {account_type} Account public key: ")
+            private_key = getpass.getpass(f"Enter {account_type} Account private key: ")
+
+            config_string = f"""[KEYS]
+            login = {login}
+            password = {password}
+            public_key = {public_key}
+            private_key = {private_key}
+            """
+
+            encrypted_config, encryption_key = self.encrypt_data(config_string.encode())
+
+            with open(encrypted_config_file, "wb") as enc_file:
+                enc_file.write(encrypted_config)
+                logging.info(f"Encrypted config saved to {encrypted_config_file}.")
+
+            with open(key_file, "wb") as key_f:
+                key_f.write(encryption_key)
+                logging.info(f"Encryption key saved to {key_file}.")
+
+            logging.info(
+                f"{account_type} Account config encrypted and saved successfully!"
+            )
+
+        except Exception as e:
+            logging.error(
+                f"Failed to create and encrypt {account_type} Account config: {e}",
+                exc_info=True,
+            )
+
+    def run(self):
+        """
+        Main function to execute the script.
+
+        This function retrieves user credentials and creates encrypted configuration files
+        for Trading and D accounts. It prompts the user for login and password, and
+        generates encrypted configuration files for both accounts.
+        """
+        try:
+            logging.info("Starting configuration creation process.")
+            login = input("\nEnter Account login: ")
+            password = getpass.getpass("Enter Account password: ")
+
+            self.create_and_encrypt_config("Trading", login, password)
+            self.create_and_encrypt_config("D", login, password)
+
+            logging.info("Configuration creation process completed successfully.")
+        except Exception as e:
+            logging.error(
+                f"An error occurred during the configuration creation process: {e}",
+                exc_info=True,
+            )
+
+
+def setup_logging():
     """
-    Encrypts the provided data using Fernet encryption.
-
-    Args:
-    - data (bytes): Data to be encrypted.
-
-    Returns:
-    - (bytes): Encrypted data.
-    - (bytes): Encryption key used to encrypt the data.
+    Configures the logging settings for the script.
     """
-    key = Fernet.generate_key()
-    cipher_suite = Fernet(key)
-    encrypted_data = cipher_suite.encrypt(data)
-    
-    return encrypted_data, key
+    logging.basicConfig(
+        level=logging.DEBUG,  # Set to DEBUG for more detailed logs
+        format="%(asctime)s - %(levelname)s - %(message)s",
+    )
 
-def create_and_encrypt_config(account_type, login, password):
-    """
-    Creates a configuration, encrypts it, and saves the encrypted file and key.
-    Skips if the encrypted file already exists.
 
-    Args:
-    - account_type (str): The type of account ('Trading' or 'D').
-    - login (str): Login for the accounts.
-    - password (str): Password for the accounts.
-
-    Returns:
-    - None
-    """
-    account_types = {
-        'Trading': 'trading_account',
-        'D': 'd_account'
-    }
-
-    # Define paths for the encrypted files
-    directory = 'C:\\AppConfigs\\Freedom24'
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    # Paths for the encrypted files
-    encrypted_config_file = os.path.join(directory, f"{account_types[account_type]}_encrypted_config.bin")
-    key_file = os.path.join(directory, f"{account_types[account_type]}_key.key")
-
-    # Check if the encrypted config file and key file already exist
-    if os.path.exists(encrypted_config_file) and os.path.exists(key_file):
-        print(f"\n{account_type} Account encrypted config already exists.")
-        return
-
-    # Get user input for the specific account keys
-    public_key = input(f"\nEnter {account_type} Account public key: ")
-    private_key = getpass.getpass(f"Enter {account_type} Account private key: ")
-
-    # Manually build the configuration string
-    config_string = f"""[KEYS]
-    login = {login}
-    password = {password}
-    public_key = {public_key}
-    private_key = {private_key}
-    """
-
-    # Encrypt the configuration data and get the encryption key
-    encrypted_config, encryption_key = encrypt_data(config_string.encode())
-
-    # Save the encrypted data to the encrypted file
-    with open(encrypted_config_file, 'wb') as enc_file:
-        enc_file.write(encrypted_config)
-
-    # Save the encryption key
-    with open(key_file, 'wb') as key_f:
-        key_f.write(encryption_key)
-
-    print(f"{account_type} Account config encrypted and saved successfully!")
-
-def run():
-    # Get login and password
-    login = input("\nEnter Account login: ")
-    password = getpass.getpass("Enter Account password: ")
-
-    # Create and encrypt configuration for Trading and D accounts
-    create_and_encrypt_config('Trading', login, password)
-    create_and_encrypt_config('D', login, password)
-
-if __name__ == '__main__':
-    run()
+if __name__ == "__main__":
+    setup_logging()
+    creator = ConfigCreator()
+    creator.run()
