@@ -57,7 +57,23 @@ def get_trading_account_user_info(
     """
     all_data = []
 
-    # Get the account summary
+    # Get liquidity information
+    liquidity = TraderNetAPI.account_summary(api_access)["result"]["ps"]["acc"]
+
+    # Iterate through the liquidity information and extract relevant amounts
+    for item in liquidity:
+        if item["curr"] == "EUR":
+            eur_amount = item["s"]
+        elif item["curr"] == "USD":
+            usd_amount = item["s"]
+        else:
+            raise ValueError("Invalid currency")
+
+    # Add the EUR and USD amounts to the data list
+    liquidity_data = {"liquidity": {"EUR": eur_amount, "USD": usd_amount}}
+    all_data.append(liquidity_data)
+
+    # Get  positions
     positions = TraderNetAPI.account_summary(api_access)["result"]["ps"]["pos"]
 
     # Get the EUR to USD rate
@@ -68,6 +84,9 @@ def get_trading_account_user_info(
 
     # Compute USD to EUR as reciprocal
     usdeur_currecy_rate_value = 1 / eurusd_currecy_rate_value
+
+    # Set up the positions data structure
+    all_positions_data = {"positions": []}
 
     # Iterate through the positions and extract relevant information
     for position in positions:
@@ -89,7 +108,7 @@ def get_trading_account_user_info(
             conversion_rate = usdeur_currecy_rate_value
 
         # Calculate the profit in the specified currency
-        data = {
+        position_data = {
             "Ticker": position["base_contract_code"],
             "Qty": qty,
             "Entry Price": entry_price,
@@ -98,7 +117,10 @@ def get_trading_account_user_info(
             "Profit": round(profit * conversion_rate, 2),
         }
 
-        # Append the data to the list
-        all_data.append(data)
+        # Append position data to the all positions data
+        all_positions_data["positions"].append(position_data)
+
+    # Append the positions data to the list
+    all_data.append(all_positions_data)
 
     return all_data
