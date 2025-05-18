@@ -38,8 +38,10 @@ def get_d_account_user_info(api_access: TraderNetAPI) -> List[Dict]:
     eur_amount = TraderNetAPI.account_summary(api_access)["result"]["ps"]["acc"][0]["s"]
     usd_amount = TraderNetAPI.account_summary(api_access)["result"]["ps"]["acc"][1]["s"]
 
+    # Create a dictionary to store the EUR and USD amounts
     data = {"EUR": eur_amount, "USD": usd_amount}
-    return [data]
+
+    return data
 
 
 def get_trading_account_user_info(
@@ -55,23 +57,22 @@ def get_trading_account_user_info(
     Returns:
     - List: A list containing dictionaries with trading account details.
     """
-    all_data = []
+    # Initialize an empty dictionary to store all data
+    all_data = {}
 
-    # Get liquidity information
-    liquidity = TraderNetAPI.account_summary(api_access)["result"]["ps"]["acc"]
+    # Get cash information
+    cash = TraderNetAPI.account_summary(api_access)["result"]["ps"]["acc"]
 
-    # Iterate through the liquidity information and extract relevant amounts
-    for item in liquidity:
-        if item["curr"] == "EUR":
-            eur_amount = item["s"]
-        elif item["curr"] == "USD":
-            usd_amount = item["s"]
-        else:
-            raise ValueError("Invalid currency")
+    # Set up the cash data structure
+    cash_dict = {}
 
-    # Add the EUR and USD amounts to the data list
-    liquidity_data = {"liquidity": {"EUR": eur_amount, "USD": usd_amount}}
-    all_data.append(liquidity_data)
+    # Iterate through the cash information and extract relevant amounts
+    for item in cash:
+        # Update the cash dictionary with the currency and amount
+        cash_dict.update({item["curr"]: item["s"]})
+
+    # Append the cash information to the all data dictionary
+    all_data["cash"] = cash_dict
 
     # Get  positions
     positions = TraderNetAPI.account_summary(api_access)["result"]["ps"]["pos"]
@@ -101,7 +102,8 @@ def get_trading_account_user_info(
         profit = position["profit_close"]
         conversion_rate = 1
 
-        # Determine the conversion rate based on the base currency and the specified currency
+        # Determine the conversion rate based on the base currency
+        # and the specified currency
         if base_currency == "EUR" and currency == "USD":
             conversion_rate = eurusd_currecy_rate_value
         elif base_currency == "USD" and currency == "EUR":
@@ -120,7 +122,7 @@ def get_trading_account_user_info(
         # Append position data to the all positions data
         all_positions_data["positions"].append(position_data)
 
-    # Append the positions data to the list
-    all_data.append(all_positions_data)
+    # Append the positions information to the all data dictionary
+    all_data["positions"] = all_positions_data["positions"]
 
     return all_data
