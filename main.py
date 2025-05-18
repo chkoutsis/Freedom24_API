@@ -53,13 +53,13 @@ def run(output_file: str):
         cred = cred_loader.load_credentials()
         logging.info("API credentials loaded successfully.")
 
-        # Retrieve Trading Account user information using the Trading Account API access
-        trading_account_info = get_trading_account_user_info(cred[0])
-        logging.info("Trading account information retrieved successfully.")
-
         # Retrieve D Account user information using the D Account API access
         d_account_info = get_d_account_user_info(cred[1])
         logging.info("D account information retrieved successfully.")
+
+        # Retrieve Trading Account user information using the Trading Account API access
+        trading_account_info = get_trading_account_user_info(cred[0])
+        logging.info("Trading account information retrieved successfully.")
 
         # Create an instance of JsonHandler to handle JSON file creation
         json_handler = JsonHandler()
