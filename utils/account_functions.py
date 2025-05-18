@@ -122,6 +122,9 @@ def get_trading_account_user_info(
         # Append position data to the all positions data
         all_positions_data["positions"].append(position_data)
 
+    # Append the currency information to the all data dictionary
+    all_data["positions_currency"] = currency
+
     # Append the positions information to the all data dictionary
     all_data["positions"] = all_positions_data["positions"]
 
