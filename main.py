@@ -2,7 +2,7 @@ import argparse
 import logging
 
 from credentials import APICredentialsLoader
-from utils import JsonHandler, get_d_account_user_info, get_trading_account_user_info
+from utils import JsonHandler, get_trading_account_user_info
 
 
 def setup_logging():
@@ -38,7 +38,7 @@ def run(output_file: str):
     """
     Main function to execute the script.
 
-    This function retrieves user information from D Account and Trading Account APIs
+    This function retrieves user information from Trading Account API
     using the provided API access credentials. It then creates a JSON file with the
     collected account information.
 
@@ -53,18 +53,14 @@ def run(output_file: str):
         cred = cred_loader.load_credentials()
         logging.info("API credentials loaded successfully.")
 
-        # Retrieve D Account user information using the D Account API access
-        d_account_info = get_d_account_user_info(cred[1])
-        logging.info("D account information retrieved successfully.")
-
         # Retrieve Trading Account user information using the Trading Account API access
-        trading_account_info = get_trading_account_user_info(cred[0])
+        trading_account_user_info = get_trading_account_user_info(cred)
         logging.info("Trading account information retrieved successfully.")
 
         # Create an instance of JsonHandler to handle JSON file creation
         json_handler = JsonHandler()
         json_handler.create_json(
-            d_account_info, trading_account_info, filename=output_file
+            trading_account_user_info=trading_account_user_info, filename=output_file
         )
         logging.info(f"Account information saved successfully to {output_file}.")
 

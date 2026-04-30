@@ -5,7 +5,7 @@ from cryptography.fernet import Fernet
 
 
 class ConfigLoader:
-    """A class to load and decrypt configuration files for trading and D accounts."""
+    """A class to load and decrypt configuration files for trading account."""
 
     def __init__(self, main_config_path: str = "C:\\AppConfigs\\Freedom24"):
         """
@@ -58,19 +58,17 @@ class ConfigLoader:
 
     def load_all_configs(
         self,
-    ) -> Tuple[Tuple[str, str, str, str], Tuple[str, str, str, str]]:
+    ) -> Tuple[str, str, str, str]:
         """
-        Loads and decrypts the configurations for trading and D accounts.
+        Loads and decrypts the configuration for the trading account.
 
         Returns:
-        - Tuple: A tuple containing two tuples, each with login, password, public_key, and private_key.
+        - Tuple: A tuple with login, password, public_key, and private_key.
         """
-        # Define the paths for the trading account and D account configuration files
+        # Define the path for the trading account configuration file
         trading_account = self.main_config_path + "\\trading_account"
-        d_account = self.main_config_path + "\\d_account"
 
-        # Load and decrypt the configurations for both accounts
+        # Load and decrypt the configuration for the trading account
         trading_account_config = self.load_decrypted_config(trading_account)
-        d_account_config = self.load_decrypted_config(d_account)
 
-        return trading_account_config, d_account_config
+        return trading_account_config

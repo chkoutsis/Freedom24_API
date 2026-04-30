@@ -7,7 +7,7 @@ from cryptography.fernet import Fernet
 
 
 class ConfigCreator:
-    """A class to create and encrypt configuration files for trading and D accounts."""
+    """A class to create and encrypt configuration files for trading account."""
 
     def __init__(self, main_config_path: str = "C:\\AppConfigs\\Freedom24"):
         """
@@ -57,7 +57,7 @@ class ConfigCreator:
         - login (str): Login for the accounts.
         - password (str): Password for the accounts.
         """
-        account_types = {"Trading": "trading_account", "D": "d_account"}
+        account_types = {"Trading": "trading_account"}
         encrypted_config_file = os.path.join(
             self.main_config_path, f"{account_types[account_type]}_encrypted_config.bin"
         )
@@ -107,8 +107,8 @@ class ConfigCreator:
         Main function to execute the script.
 
         This function retrieves user credentials and creates encrypted configuration files
-        for Trading and D accounts. It prompts the user for login and password, and
-        generates encrypted configuration files for both accounts.
+        for Trading account. It prompts the user for login and password, and
+        generates an encrypted configuration file.
         """
         try:
             logging.info("Starting configuration creation process.")
@@ -116,7 +116,6 @@ class ConfigCreator:
             password = getpass.getpass("Enter Account password: ")
 
             self.create_and_encrypt_config("Trading", login, password)
-            self.create_and_encrypt_config("D", login, password)
 
             logging.info("Configuration creation process completed successfully.")
         except Exception as e:

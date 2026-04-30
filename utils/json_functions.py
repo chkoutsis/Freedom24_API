@@ -41,15 +41,13 @@ class JsonHandler:
 
     def create_json(
         self,
-        d_account_user_info: List,
         trading_account_user_info: List,
         filename: str = "data.json",
     ) -> str:
         """
-        Creates a JSON structure combining D Account and Trading Account information and saves it to a file.
+        Creates a JSON structure with Trading Account information and saves it to a file.
 
         Args:
-        - d_account_user_info (list): A list containing a dictionary with 'EUR' and 'USD' keys, representing the respective balances.
         - trading_account_user_info (list): A list containing dictionaries with trading account details.
         - filename (str): The name of the file to save the JSON string. Defaults to 'data.json'.
 
@@ -58,7 +56,6 @@ class JsonHandler:
         """
         # Create a dictionary to hold the data
         json_data = {
-            "d_account": d_account_user_info,
             "trading_account": trading_account_user_info,
         }
         # Convert the dictionary to a JSON string with indentation for readability

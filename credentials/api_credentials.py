@@ -1,11 +1,9 @@
-from typing import Tuple
-
 from config import ConfigLoader
 from utils import get_api_access
 
 
 class APICredentialsLoader:
-    """A class to load API credentials for Trading Account and D Account."""
+    """A class to load API credentials for Trading Account."""
 
     def __init__(self):
         """
@@ -13,18 +11,18 @@ class APICredentialsLoader:
         """
         self.config_loader = ConfigLoader()
 
-    def load_credentials(self) -> Tuple:
+    def load_credentials(self):
         """
-        Loads API credentials for Trading Account and D Account.
+        Loads API credentials for Trading Account.
 
         Args:
         - None
 
         Returns:
-        - Tuple: A tuple containing two instances of TraderNetAPI for Trading Account and D Account.
+        - TraderNetAPI: An instance of TraderNetAPI for Trading Account.
         """
         # Load the configuration using the ConfigLoader class
-        trading_account_config, d_account_config = self.config_loader.load_all_configs()
+        trading_account_config = self.config_loader.load_all_configs()
 
         # Get API access for Trading Account using the provided credentials
         trading_account_api_access = get_api_access(
@@ -34,12 +32,4 @@ class APICredentialsLoader:
             trading_account_config[3],
         )
 
-        # Get API access for D Account using the provided credentials
-        d_account_api_access = get_api_access(
-            d_account_config[0],
-            d_account_config[1],
-            d_account_config[2],
-            d_account_config[3],
-        )
-
-        return trading_account_api_access, d_account_api_access
+        return trading_account_api_access

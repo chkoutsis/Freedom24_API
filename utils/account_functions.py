@@ -23,27 +23,6 @@ def get_api_access(
     return TraderNetAPI(public_key, private_key, login, password)
 
 
-def get_d_account_user_info(api_access: TraderNetAPI) -> List[Dict]:
-    """
-    Retrieves the EUR and USD Account balances for a user via TraderNetAPI.
-
-    Args:
-    - api_access (TraderNetAPI): An instance of TraderNetAPI for accessing user account information.
-
-    Returns:
-    - List: A list containing a dictionary with 'EUR' and 'USD' keys, representing the respective balances.
-    """
-    # Get the account summary
-    # The account summary contains the account balances in different currencies
-    eur_amount = TraderNetAPI.account_summary(api_access)["result"]["ps"]["acc"][0]["s"]
-    usd_amount = TraderNetAPI.account_summary(api_access)["result"]["ps"]["acc"][1]["s"]
-
-    # Create a dictionary to store the EUR and USD amounts
-    data = {"EUR": eur_amount, "USD": usd_amount}
-
-    return data
-
-
 def get_trading_account_user_info(
     api_access: TraderNetAPI, currency: Optional[str] = "EUR"
 ) -> List[Dict]:

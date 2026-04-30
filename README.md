@@ -1,6 +1,6 @@
 # Freedom24_API
 
-This application allows users to retrieve account information from their D-Account and Trading Account using their respective API keys, securely manage configurations and create a JSON structure by combining the information.
+This application allows users to retrieve account information from their Trading Account using API keys, securely manage configurations and create a JSON structure with the retrieved data.
 
 ## Usage
 ### 1. Configuration Setup
